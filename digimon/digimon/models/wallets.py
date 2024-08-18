@@ -1,33 +1,28 @@
-from typing import Annotated
-from typing import Optional, List
+from typing import Optional
+
 from pydantic import BaseModel, ConfigDict
 from sqlmodel import Field, SQLModel, create_engine, Session, select, Relationship
 
 from . import users
 
+
 class BaseWallet(BaseModel):
     model_config = ConfigDict(from_attributes=True)
-    owner: str
-    balance: float
+    balance: float = 100.0
+    user_id: int | None = 1
 
 class CreatedWallet(BaseWallet):
     pass
 
-class UpdateWallet(BaseWallet):
-    pass
 
+class UpdatedWallet(BaseWallet):
+    pass
 
 class Wallet(BaseWallet):
     id: int
 
-class DBWallet(Wallet, SQLModel, table=True):
+class DBWallet(BaseWallet, SQLModel, table=True):
     __tablename__ = "wallets"
-    id: Optional[int] = Field(default=None, primary_key=True)
-
-
-class Wallet_list(BaseModel):
-    model_config = ConfigDict(from_attributes=True)
-    wallets: list[Wallet]
-    page: int
-    page_size: int
-    size_per_page: int
+    id: int = Field(default=None, primary_key=True)
+    user_id: int = Field(default=None, foreign_key="users.id")
+    user: users.DBUser | None = Relationship()

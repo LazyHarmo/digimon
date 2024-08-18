@@ -1,14 +1,31 @@
+from gevent import monkey
+
+monkey.patch_all()
+
 from fastapi import FastAPI
+from contextlib import asynccontextmanager
 
-from .routers import init_router
-from .models import init_db
+from . import config
+from . import models
+
+from . import routers
 
 
-def create_app():
-    app = FastAPI()
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    yield
+    if models.engine is not None:
+        # Close the DB connection
+        await models.sesion_close()
 
-    init_db()
 
-    init_router(app)
+def create_app(settings=None):
+    if not settings:
+        settings = config.get_settings()
 
+    app = FastAPI(lifespan=lifespan)
+
+    models.init_db(settings)
+
+    routers.init_router(app)
     return app

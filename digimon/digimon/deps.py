@@ -10,7 +10,6 @@ from . import models
 from . import security
 from . import config
 
-
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/token")
 
 settings = config.get_settings()

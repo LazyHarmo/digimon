@@ -29,8 +29,6 @@ class UpdatedItem(BaseItem):
 class Item(BaseItem):
     id: int
     merchant_id: int
-    # merchant: merchants.Merchant | None
-
 
 class DBItem(BaseItem, SQLModel, table=True):
     __tablename__ = "items"
