@@ -1,6 +1,4 @@
 from typing import AsyncIterator
-
-
 from sqlmodel import Field, SQLModel, create_engine, Session, select
 from sqlmodel.ext.asyncio.session import AsyncSession
 

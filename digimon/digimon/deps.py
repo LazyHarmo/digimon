@@ -1,9 +1,7 @@
 from fastapi import Depends, HTTPException, status, Path, Query
 from fastapi.security import OAuth2PasswordBearer
-
 import typing
 import jwt
-
 from pydantic import ValidationError
 
 from . import models
@@ -11,9 +9,7 @@ from . import security
 from . import config
 
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/token")
-
 settings = config.get_settings()
-
 
 async def get_current_user(
     token: typing.Annotated[str, Depends(oauth2_scheme)],
@@ -43,14 +39,12 @@ async def get_current_user(
 
     return user
 
-
 async def get_current_active_user(
     current_user: typing.Annotated[models.User, Depends(get_current_user)]
 ) -> models.User:
     if current_user.status != "active":
         raise HTTPException(status_code=400, detail="Inactive user")
     return current_user
-
 
 async def get_current_active_superuser(
     current_user: typing.Annotated[models.User, Depends(get_current_user)],
@@ -60,7 +54,6 @@ async def get_current_active_superuser(
             status_code=400, detail="The user doesn't have enough privileges"
         )
     return current_user
-
 
 class RoleChecker:
     def __init__(self, *allowed_roles: list[str]):
